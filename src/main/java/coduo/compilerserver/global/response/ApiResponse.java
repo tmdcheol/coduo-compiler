@@ -10,8 +10,12 @@ public record ApiResponse<T>(
     T result
 ) {
 
-    public static final ApiResponse<Void> OK = new ApiResponse<>(true, SuccessStatus.OK.getCode(),
-        SuccessStatus.OK.getMessage(), null);
+    public static final ApiResponse<Void> OK = new ApiResponse<>(
+        true,
+        SuccessStatus.OK.getCode(),
+        SuccessStatus.OK.getMessage(),
+        null
+    );
 
     public static <T> ApiResponse<T> onSuccess(T result) {
         return new ApiResponse<>(true, SuccessStatus.OK.getCode(), SuccessStatus.OK.getMessage(),
