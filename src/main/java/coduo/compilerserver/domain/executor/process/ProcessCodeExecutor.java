@@ -1,9 +1,8 @@
 package coduo.compilerserver.domain.executor.process;
 
 import coduo.compilerserver.domain.Project;
-import coduo.compilerserver.domain.executionresult.ExecutionResult;
+import coduo.compilerserver.domain.executor.ExecutionResult;
 import coduo.compilerserver.domain.executor.CodeExecutor;
-import coduo.compilerserver.domain.executor.LanguageExecutor;
 import coduo.compilerserver.global.response.exception.GeneralException;
 import coduo.compilerserver.global.response.status.ErrorStatus;
 import java.util.List;

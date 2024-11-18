@@ -5,23 +5,23 @@ import java.util.List;
 public abstract class CompilerRequest {
 
     public record CompileRequest(
-        String language,
-        String version,
-        Project project
+            String language,
+            String version,
+            Project project
     ) {
 
     }
 
     public record Project(
-        String entryPoint,
-        List<FileInfo> fileInfos
+            String entryPoint,
+            List<FileInfo> fileInfos
     ) {
 
     }
 
     public record FileInfo(
-        String path,
-        String content
+            String path,
+            String content
     ) {
 
     }

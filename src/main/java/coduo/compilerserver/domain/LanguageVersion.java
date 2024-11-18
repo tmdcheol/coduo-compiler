@@ -26,7 +26,7 @@ public enum LanguageVersion {
     public static LanguageVersion from(String language, String version) {
         for (LanguageVersion lv : LanguageVersion.values()) {
             if (lv.getLanguage().equalsIgnoreCase(language) &&
-                lv.getVersion().equalsIgnoreCase(version)
+                    lv.getVersion().equalsIgnoreCase(version)
             ) {
                 return lv;
             }

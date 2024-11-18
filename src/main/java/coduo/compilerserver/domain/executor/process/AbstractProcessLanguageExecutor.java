@@ -5,7 +5,7 @@ import static coduo.compilerserver.global.utils.Constants.*;
 import coduo.compilerserver.domain.LanguageVersion;
 import coduo.compilerserver.domain.Project;
 import coduo.compilerserver.domain.Project.SourceFile;
-import coduo.compilerserver.domain.executionresult.ExecutionResult;
+import coduo.compilerserver.domain.executor.ExecutionResult;
 import coduo.compilerserver.domain.executor.LanguageExecutor;
 import coduo.compilerserver.global.response.exception.GeneralException;
 import coduo.compilerserver.global.response.status.ErrorStatus;
@@ -14,15 +14,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -48,24 +42,24 @@ public abstract class AbstractProcessLanguageExecutor implements LanguageExecuto
     }
 
     protected ExecutionResult runProcess(
-        String command,
-        Path workingDirectory,
-        String executionId
+            String command,
+            Path workingDirectory,
+            String executionId
     ) {
         StringBuilder outputBuilder = new StringBuilder();
         StringBuilder errorBuilder = new StringBuilder();
 
         try {
             Integer exitCode = run(
-                command, workingDirectory,
-                outputBuilder, errorBuilder
+                    command, workingDirectory,
+                    outputBuilder, errorBuilder
             );
 
             return createExecutionResult(
-                exitCode,
-                executionId,
-                outputBuilder,
-                errorBuilder
+                    exitCode,
+                    executionId,
+                    outputBuilder,
+                    errorBuilder
             );
 
         } catch (InterruptedException | IOException e) {
@@ -74,10 +68,10 @@ public abstract class AbstractProcessLanguageExecutor implements LanguageExecuto
     }
 
     private Integer run(
-        String command,
-        Path workingDirectory,
-        StringBuilder outputBuilder,
-        StringBuilder errorBuilder
+            String command,
+            Path workingDirectory,
+            StringBuilder outputBuilder,
+            StringBuilder errorBuilder
     ) throws IOException, InterruptedException {
 
         String[] commandArray = command.split(SPACE);
@@ -90,20 +84,20 @@ public abstract class AbstractProcessLanguageExecutor implements LanguageExecuto
          * 스트림을 별개의 스레드로 두어서 메인 스레드가 blocking 되지 않도록
          */
         Thread outputHandleThread = new Thread(
-            () -> readStream(process.getInputStream(), outputBuilder)
+                () -> readStream(process.getInputStream(), outputBuilder)
         );
         outputHandleThread.start();
 
         Thread errorHandleThread = new Thread(
-            () -> readStream(process.getErrorStream(), errorBuilder)
+                () -> readStream(process.getErrorStream(), errorBuilder)
         );
         errorHandleThread.start();
 
         try {
             return waitProcessWithTimeout(
-                process,
-                Constants.PROCESS_TIME_OUT_SECOND,
-                TimeUnit.SECONDS
+                    process,
+                    Constants.PROCESS_TIME_OUT_SECOND,
+                    TimeUnit.SECONDS
             );
         } finally {
             outputHandleThread.join();
@@ -113,7 +107,7 @@ public abstract class AbstractProcessLanguageExecutor implements LanguageExecuto
 
     private void readStream(InputStream inputStream, StringBuilder builder) {
         try (
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))
         ) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -125,7 +119,7 @@ public abstract class AbstractProcessLanguageExecutor implements LanguageExecuto
     }
 
     private int waitProcessWithTimeout(Process process, long timeout, TimeUnit timeUnit)
-        throws InterruptedException {
+            throws InterruptedException {
         boolean isFinished = process.waitFor(timeout, timeUnit);
         if (!isFinished) {
             process.destroyForcibly();
@@ -150,24 +144,24 @@ public abstract class AbstractProcessLanguageExecutor implements LanguageExecuto
     }
 
     private ExecutionResult createExecutionResult(
-        Integer exitCode,
-        String executionId,
-        StringBuilder outputBuilder,
-        StringBuilder errorBuilder
+            Integer exitCode,
+            String executionId,
+            StringBuilder outputBuilder,
+            StringBuilder errorBuilder
     ) {
         if (exitCode.equals(SUCCESS_EXIT_CODE)) {
             return ExecutionResult.builder()
-                .executionId(executionId)
-                .exitCode(exitCode)
-                .output(outputBuilder.toString())
-                .build();
+                    .executionId(executionId)
+                    .exitCode(exitCode)
+                    .output(outputBuilder.toString())
+                    .build();
         }
 
         return ExecutionResult.builder()
-            .executionId(executionId)
-            .exitCode(exitCode)
-            .errorMessage(errorBuilder.toString())
-            .build();
+                .executionId(executionId)
+                .exitCode(exitCode)
+                .errorMessage(errorBuilder.toString())
+                .build();
     }
 
 

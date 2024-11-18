@@ -4,7 +4,7 @@ import static coduo.compilerserver.global.utils.Constants.*;
 
 import coduo.compilerserver.domain.LanguageVersion;
 import coduo.compilerserver.domain.Project;
-import coduo.compilerserver.domain.executionresult.ExecutionResult;
+import coduo.compilerserver.domain.executor.ExecutionResult;
 import coduo.compilerserver.domain.executor.process.AbstractProcessLanguageExecutor;
 import coduo.compilerserver.global.response.exception.GeneralException;
 import coduo.compilerserver.global.response.status.ErrorStatus;
@@ -34,6 +34,6 @@ public class JavascriptProcessExecutor extends AbstractProcessLanguageExecutor {
     @Override
     public boolean supports(LanguageVersion languageVersion) {
         return languageVersion.equals(LanguageVersion.JAVASCRIPT_V14) ||
-            languageVersion.equals(LanguageVersion.JAVASCRIPT_V16);
+                languageVersion.equals(LanguageVersion.JAVASCRIPT_V16);
     }
 }
